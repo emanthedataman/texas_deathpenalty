@@ -66,7 +66,10 @@ def scrape_links(soup):
 path = get_url_path(url)
 soup = cache_to_soup(url, path)
 links = scrape_links(soup)
-print links
+
+
+for link in links:
+    print link
 
 
 
