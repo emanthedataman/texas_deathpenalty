@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from time import sleep
-
+from urlparse import urlparse
 import requests
 import random
 
@@ -12,34 +12,51 @@ min_sec = 0.5
 max_sec = 2.7
 
 
-
-
-def url_to_soup(url):
-    response = requests.get(url)
-    html = response.text
-    soup = BeautifulSoup(html, "lxml")
+def check_cache(url):
     
-    return soup
-
- 
-#things I want from the first page: execution number and link to full bio
-soup = url_to_soup(url)
-table = soup.find('table')
-links = table.findAll('a', href=True, text='Offender Information')
-
-inmate_links = []
-
-for link in links:
-    inmate_link = root_url + link['href']
-    inmate_links.append(inmate_link)
+    parsed_url = urlparse(url)
+    
+    if 'dr_executed_offenders' in parsed_url.path:
+        return '../cache/all_offenders/'
+    else:
+        return '../cache/indiv_offenders/' 
+    
     
 
-for inmate in inmate_links[0:1]:
-    sleep(random.uniform(min_sec, max_sec))
-    soup = url_to_soup(inmate)
+cache = check_cache(url)
+print cache
     
-    table = soup.find('table', {'class','tabledata_deathrow_table'})
-    print table
+
+
+
+
+
+# def url_to_soup(url):
+#     response = requests.get(url)
+#     html = response.text
+#     soup = BeautifulSoup(html, "lxml")
+#     
+#     return soup
+# 
+#  
+# #things I want from the first page: execution number and link to full bio
+# soup = url_to_soup(url)
+# table = soup.find('table')
+# links = table.findAll('a', href=True, text='Offender Information')
+# 
+# inmate_links = []
+# 
+# for link in links:
+#     inmate_link = root_url + link['href']
+#     inmate_links.append(inmate_link)
+#     
+# 
+# for inmate in inmate_links[0:1]:
+#     sleep(random.uniform(min_sec, max_sec))
+#     soup = url_to_soup(inmate)
+#     
+#     table = soup.find('table', {'class','tabledata_deathrow_table'})
+#     print table
     
     
     
