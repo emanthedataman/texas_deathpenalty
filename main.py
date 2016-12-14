@@ -4,12 +4,7 @@ from urlparse import urlparse
 import requests
 import random
 
-
-root_url = 'http://www.tdcj.state.tx.us/death_row/'
 url = 'http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html'
-
-min_sec = 0.5
-max_sec = 2.7
 
 
 def get_url_path(url):
@@ -26,13 +21,16 @@ def get_url_path(url):
     return file_path
 
 
-def create_cache_file(url, file_path):
+def cache_to_soup(url, file_path):
     '''creates cache from the url'''
+    
+    min_sec = 0.5
+    max_sec = 2.7
     
     try:
         print 'Reading file...' + file_path
         read_cache = open(file_path, 'rb')
-        cache = read_cache
+        soup = BeautifulSoup(read_cache, "lxml")
         read_cache.close()
 
     except IOError:
@@ -40,34 +38,44 @@ def create_cache_file(url, file_path):
         print 'Writing file... ' + file_path
         
         response = requests.get(url)
+        sleep(random.uniform(min_sec, max_sec))
         html = response.text
         
         write_cache = open(file_path, 'wb')
         write_cache.write(html.encode('utf-8'))
-        cache = write_cache
+        soup = BeautifulSoup(html, "lxml")
         write_cache.close()
         
-    return cache
+    return soup
+
+def scrape_links(soup):
+    
+    root_url = 'http://www.tdcj.state.tx.us/death_row/'
+    inmate_links = []
+    
+    table = soup.find('table')
+    links = table.findAll('a', href=True, text='Offender Information')
+    for link in links:
+        inmate_link = root_url + link['href']
+        inmate_links.append(inmate_link)
+          
+    return inmate_links
+    
         
         
 path = get_url_path(url)
-cache = create_cache_file(url, path)
+soup = cache_to_soup(url, path)
+links = scrape_links(soup)
+print links
+
+
 
 
     
 
 
 
-
-
-# def url_to_soup(url):
-#     response = requests.get(url)
-#     html = response.text
-#     soup = BeautifulSoup(html, "lxml")
-#     
-#     return soup
-# 
-#  
+  
 # #things I want from the first page: execution number and link to full bio
 # soup = url_to_soup(url)
 # table = soup.find('table')
