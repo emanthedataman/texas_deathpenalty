@@ -12,19 +12,48 @@ min_sec = 0.5
 max_sec = 2.7
 
 
-def check_cache(url):
+def get_url_path(url):
+    '''checks url and determines the appropriate path for cache'''
     
     parsed_url = urlparse(url)
+    file_name = parsed_url.path.split('/')[-1]
     
-    if 'dr_executed_offenders' in parsed_url.path:
-        return '../cache/all_offenders/'
+    if 'dr_executed_offenders' in file_name:
+        file_path = '../cache/all_offenders/' + file_name
     else:
-        return '../cache/indiv_offenders/' 
+        file_path =  '../cache/indiv_offenders/' + file_name 
     
-    
+    return file_path
 
-cache = check_cache(url)
-print cache
+
+def create_cache_file(url, file_path):
+    '''creates cache from the url'''
+    
+    try:
+        print 'Reading file...' + file_path
+        read_cache = open(file_path, 'rb')
+        cache = read_cache
+        read_cache.close()
+
+    except IOError:
+    
+        print 'Writing file... ' + file_path
+        
+        response = requests.get(url)
+        html = response.text
+        
+        write_cache = open(file_path, 'wb')
+        write_cache.write(html.encode('utf-8'))
+        cache = write_cache
+        write_cache.close()
+        
+    return cache
+        
+        
+path = get_url_path(url)
+cache = create_cache_file(url, path)
+
+
     
 
 
