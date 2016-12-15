@@ -71,33 +71,9 @@ links = scrape_links(soup)
 
 for link in links:
     file_path = get_url_path(link)
-    print file_path
+    soup = cache_to_soup(link, file_path)
 
 
-
-    
-
-
-
-  
-# #things I want from the first page: execution number and link to full bio
-# soup = url_to_soup(url)
-# table = soup.find('table')
-# links = table.findAll('a', href=True, text='Offender Information')
-# 
-# inmate_links = []
-# 
-# for link in links:
-#     inmate_link = root_url + link['href']
-#     inmate_links.append(inmate_link)
-#     
-# 
-# for inmate in inmate_links[0:1]:
-#     sleep(random.uniform(min_sec, max_sec))
-#     soup = url_to_soup(inmate)
-#     
-#     table = soup.find('table', {'class','tabledata_deathrow_table'})
-#     print table
     
     
     
