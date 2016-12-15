@@ -11,6 +11,7 @@ def get_url_path(url):
     '''checks url and determines the appropriate path for cache'''
     
     parsed_url = urlparse(url)
+    
     file_name = parsed_url.path.split('/')[-1]
     
     if 'dr_executed_offenders' in file_name:
@@ -69,8 +70,8 @@ links = scrape_links(soup)
 
 
 for link in links:
-    print link
-
+    file_path = get_url_path(link)
+    print file_path
 
 
 
