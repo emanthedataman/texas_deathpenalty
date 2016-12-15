@@ -62,16 +62,38 @@ def scrape_links(soup):
           
     return inmate_links
     
-        
+
+def scrape_off_info(soup):
+    
+    i = 1
+    
+    table = soup.find('table', {'class', 'tabledata_deathrow_table'})
+    td_tags = table.findAll('td')
+    
+    for td_tag in td_tags:
+        if len(td_tag.text) > 1:
+            print str(i) + ": " + td_tag.text
+        i += 1
+            
+
+
+
+
+
+
+#         text = td_tag.text
+#         print text
+
         
 path = get_url_path(url)
 soup = cache_to_soup(url, path)
 links = scrape_links(soup)
 
 
-for link in links:
+for link in links[0:3]:
     file_path = get_url_path(link)
     soup = cache_to_soup(link, file_path)
+    scrape_off_info(soup)
 
 
     
