@@ -5,7 +5,7 @@ import requests
 import random
 
 url = 'http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html'
-
+headers = ['Name', 'TDCJ Number', 'Date of Birth', 'Date Received', 'Age (when    Received)', 'Education Level (Highest Grade Completed)', 'Date of Offense', 'Age (at the time    of Offense)', 'County', 'Race', 'Gender', 'Hair Color', 'Height', 'Weight', 'Eye Color', 'Native County', 'Native State']
 
 def get_url_path(url):
     '''checks url and determines the appropriate path for cache'''
@@ -63,7 +63,7 @@ def scrape_links(soup):
     return inmate_links
     
 
-def scrape_off_info(soup):
+def scrape_off_info(soup, headers):
     
     i = 1
     
@@ -71,9 +71,9 @@ def scrape_off_info(soup):
     td_tags = table.findAll('td')
     
     for td_tag in td_tags:
-        if len(td_tag.text) > 1:
-            print str(i) + ": " + td_tag.text
-        i += 1
+        if td_tag.text not in headers and len(td_tag.text) > 1:
+            print td_tag.text
+            
             
 
 
@@ -93,7 +93,7 @@ links = scrape_links(soup)
 for link in links[0:3]:
     file_path = get_url_path(link)
     soup = cache_to_soup(link, file_path)
-    scrape_off_info(soup)
+    scrape_off_info(soup, headers)
 
 
     
